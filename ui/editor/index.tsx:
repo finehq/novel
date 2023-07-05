@@ -1,0 +1,53 @@
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import TiptapExtensions from './extensions';
+import './styles.css';
+
+function Editor() {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      ...TiptapExtensions,
+    ],
+    content: '',
+    onUpdate: ({ editor }) => {
+      const content = editor.getHTML();
+      // Save content to database or local storage here
+    },
+    onPaste: ({ editor, event }) => {
+      const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+      if (isYoutubeLink(pastedText)) {
+        event.preventDefault();
+        const youtubeId = extractYoutubeId(pastedText);
+        editor.commands.insertContent(`<div data-youtube-video><iframe src="https://www.youtube.com/embed/${youtubeId}?controls=0"></iframe></div>`);
+      }
+    },
+    onSelectionUpdate: ({ editor }) => {
+      const selectedNode = editor.state.selection.$anchor.node();
+      if (selectedNode.type.name === 'youtube') {
+        showToolbar({
+          options: [
+            { label: 'Remove', action: () => editor.commands.deleteSelection() },
+            { label: 'Replace', action: () => replaceYoutubeVideo() },
+          ],
+        });
+      }
+    },
+  });
+
+  function replaceYoutubeVideo() {
+    const newLink = prompt('Enter a new YouTube link');
+    if (isYoutubeLink(newLink)) {
+      const youtubeId = extractYoutubeId(newLink);
+      editor.commands.replaceSelection(`<div data-youtube-video><iframe src="https://www.youtube.com/embed/${youtubeId}?controls=0"></iframe></div>`);
+    }
+  }
+
+  return (
+    <div className="editor">
+      <EditorContent editor={editor} />
+    </div>
+  );
+}
+
+export default Editor;

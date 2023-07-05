@@ -1,0 +1,35 @@
+import { Extension } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
+import Link from '@tiptap/extension-link';
+import Image from '@tiptap/extension-image';
+import TextStyle from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
+import Underline from '@tiptap/extension-underline';
+import Highlight from '@tiptap/extension-highlight';
+import HorizontalRule from '@tiptap/extension-horizontal-rule';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
+import Youtube from '@tiptap/extension-youtube';
+
+const TiptapExtensions: Extension[] = [
+  ...StarterKit,
+  Placeholder,
+  Link,
+  Image,
+  TextStyle,
+  Color,
+  Underline,
+  Highlight,
+  HorizontalRule,
+  TaskList,
+  TaskItem,
+  Youtube.configure({
+    inline: false,
+    width: 640,
+    height: 480,
+    controls: true,
+  }),
+];
+
+export default TiptapExtensions;
